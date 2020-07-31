@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:great_places_app/helpers/db_helper.dart';
 import 'package:great_places_app/models/place.dart';
 
 class GreatPlaces with ChangeNotifier {
@@ -11,11 +12,17 @@ class GreatPlaces with ChangeNotifier {
   }
 
   void addPlace(String title, File image) {
-    _items.add(Place(
+    final newPlace = Place(
         title: title,
         image: image,
         id: DateTime.now().toString(),
-        location: null));
+        location: null);
+    _items.add(newPlace);
     notifyListeners();
+    DBHelper.insert('places', {
+      'id': newPlace.id,
+      'title': newPlace.title,
+      'image': newPlace.image.path
+    });
   }
 }
