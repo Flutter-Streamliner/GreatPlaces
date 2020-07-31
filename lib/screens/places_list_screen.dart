@@ -19,28 +19,35 @@ class PlacesListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Consumer<GreatPlaces>(
-          builder: (context, greatPlaces, child) =>
-              greatPlaces.items.length <= 0
-                  ? child
-                  : ListView.builder(
-                      itemCount: greatPlaces.items.length,
-                      itemBuilder: (context, index) => ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              FileImage(greatPlaces.items[index].image),
-                        ),
-                        title: Text(greatPlaces.items[index].title),
-                        onTap: () {
-                          // go to detail page
-                        },
-                      ),
-                    ),
-          child: Center(
-            child: Text('Got no places yet, start adding some!'),
-          ),
-        ),
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false)
+            .fetchAndSetPlaces(),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Consumer<GreatPlaces>(
+                builder: (context, greatPlaces, child) =>
+                    greatPlaces.items.length <= 0
+                        ? child
+                        : ListView.builder(
+                            itemCount: greatPlaces.items.length,
+                            itemBuilder: (context, index) => ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    FileImage(greatPlaces.items[index].image),
+                              ),
+                              title: Text(greatPlaces.items[index].title),
+                              onTap: () {
+                                // go to detail page
+                              },
+                            ),
+                          ),
+                child: Center(
+                  child: Text('Got no places yet, start adding some!'),
+                ),
+              ),
       ),
     );
   }
