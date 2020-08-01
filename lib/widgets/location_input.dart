@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:great_places_app/helpers/location_helper.dart';
+import 'package:great_places_app/screens/map_screen.dart';
 import 'package:location/location.dart';
 
 class LicationInput extends StatefulWidget {
@@ -18,6 +19,17 @@ class _LicationInputState extends State<LicationInput> {
       _previewImageUrl = staticMapImageUrl;
       print(_previewImageUrl);
     });
+  }
+
+  Future<void> _selectOnMap() async {
+    final selectedLocation = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MapScreen(
+        isSelecting: false,
+      ),
+    ));
+    if (selectedLocation == null) {
+      return;
+    }
   }
 
   @override
@@ -58,7 +70,7 @@ class _LicationInputState extends State<LicationInput> {
               textColor: Theme.of(context).primaryColor,
             ),
             FlatButton.icon(
-              onPressed: () {},
+              onPressed: _selectOnMap,
               icon: Icon(Icons.map),
               label: Text('Select on Map'),
               textColor: Theme.of(context).primaryColor,
