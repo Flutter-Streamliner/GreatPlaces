@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
 class LicationInput extends StatefulWidget {
   @override
@@ -7,6 +8,12 @@ class LicationInput extends StatefulWidget {
 
 class _LicationInputState extends State<LicationInput> {
   String _previewImageUrl;
+
+  Future<void> _getCurrentUserLocation() async {
+    final locationData = await Location().getLocation();
+    print(locationData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -33,7 +40,7 @@ class _LicationInputState extends State<LicationInput> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton.icon(
-              onPressed: () {},
+              onPressed: _getCurrentUserLocation,
               icon: Icon(Icons.location_on),
               label: Text('Current Location'),
               textColor: Theme.of(context).primaryColor,
