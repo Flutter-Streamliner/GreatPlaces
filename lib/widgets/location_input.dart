@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:great_places_app/helpers/location_helper.dart';
 import 'package:location/location.dart';
 
 class LicationInput extends StatefulWidget {
@@ -11,7 +12,12 @@ class _LicationInputState extends State<LicationInput> {
 
   Future<void> _getCurrentUserLocation() async {
     final locationData = await Location().getLocation();
-    print(locationData);
+    final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
+        longitude: locationData.longitude, latitude: locationData.latitude);
+    setState(() {
+      _previewImageUrl = staticMapImageUrl;
+      print(_previewImageUrl);
+    });
   }
 
   @override
@@ -34,6 +40,12 @@ class _LicationInputState extends State<LicationInput> {
                   _previewImageUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
+                  errorBuilder:
+                      (context, Object object, StackTrace stacktrace) {
+                    print(object);
+                    print(stacktrace);
+                    return Container();
+                  },
                 ),
         ),
         Row(
