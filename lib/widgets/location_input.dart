@@ -1,28 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:great_places_app/helpers/location_helper.dart';
 import 'package:great_places_app/screens/map_screen.dart';
 import 'package:location/location.dart';
 
-class LicationInput extends StatefulWidget {
+class LocationInput extends StatefulWidget {
+  final Function onSelectPlace;
+
+  LocationInput(this.onSelectPlace);
+
   @override
-  _LicationInputState createState() => _LicationInputState();
+  _LocationInputState createState() => _LocationInputState();
 }
 
-class _LicationInputState extends State<LicationInput> {
+class _LocationInputState extends State<LocationInput> {
   String _previewImageUrl;
 
-  Future<void> _getCurrentUserLocation() async {
-    final locationData = await Location().getLocation();
+  void _showPreview(double lat, double lng) {
     final staticMapImageUrl = LocationHelper.generateLocationPreviewImage(
-        longitude: locationData.longitude, latitude: locationData.latitude);
+        longitude: lng, latitude: lat);
     setState(() {
       _previewImageUrl = staticMapImageUrl;
       print(_previewImageUrl);
     });
   }
 
+  Future<void> _getCurrentUserLocation() async {
+    try {
+      final locationData = await Location().getLocation();
+      _showPreview(locationData.latitude, locationData.longitude);
+      widget.onSelectPlace(locationData.latitude, locationData.longitude);
+    } catch (e) {
+      return;
+    }
+  }
+
   Future<void> _selectOnMap() async {
-    final selectedLocation = await Navigator.of(context).push(MaterialPageRoute(
+    final LatLng selectedLocation =
+        await Navigator.of(context).push<LatLng>(MaterialPageRoute(
       builder: (context) => MapScreen(
         isSelecting: true,
       ),
@@ -30,6 +45,8 @@ class _LicationInputState extends State<LicationInput> {
     if (selectedLocation == null) {
       return;
     }
+    _showPreview(selectedLocation.latitude, selectedLocation.longitude);
+    widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override
