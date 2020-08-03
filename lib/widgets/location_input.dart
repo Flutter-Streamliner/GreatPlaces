@@ -24,7 +24,7 @@ class _LicationInputState extends State<LicationInput> {
   Future<void> _selectOnMap() async {
     final selectedLocation = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => MapScreen(
-        isSelecting: false,
+        isSelecting: true,
       ),
     ));
     if (selectedLocation == null) {
