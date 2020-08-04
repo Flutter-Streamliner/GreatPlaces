@@ -22,9 +22,7 @@ class _MapScreenState extends State<MapScreen> {
 
   void _selectLocation(LatLng position) {
     setState(() {
-      print('new location $position prev posotion $_pickedLocation');
       _pickedLocation = position;
-      print('picked location = $_pickedLocation');
     });
   }
 
@@ -53,9 +51,15 @@ class _MapScreenState extends State<MapScreen> {
               widget.inititalLocation.longitude,
             )),
         onTap: widget.isSelecting ? _selectLocation : null,
-        markers: _pickedLocation == null
+        markers: (_pickedLocation == null && widget.isSelecting)
             ? null
-            : {Marker(markerId: MarkerId("M1"), position: _pickedLocation)},
+            : {
+                Marker(
+                    markerId: MarkerId("M1"),
+                    position: _pickedLocation ??
+                        LatLng(widget.inititalLocation.lattitude,
+                            widget.inititalLocation.longitude))
+              },
       ),
     );
   }
